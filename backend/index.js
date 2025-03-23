@@ -3,16 +3,18 @@ const { GoogleGenerativeAI } = require('@google/generative-ai')
 const fs = require('fs')
 const express = require('express')
 const cors = require('cors')
+const dotenv = require('dotenv')
 
 const app = express()
 const port = 5000
 
 // Middleware
+dotenv.config()
 app.use(express.json())
 app.use(cors())
 
-const GEMINI_API_KEY = 'AIzaSyC8nH8h04EFA8uyK-BfPIHowCJA2uZHly8'
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY)
+// console.log(process.env.GEMINI_API_KEY)
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
 async function scrapeAmazonProduct(url) {
   const browser = await puppeteer.launch()
@@ -85,7 +87,6 @@ async function scrapeAmazonProduct(url) {
   }
 }
 
-// API route to scrape a product
 app.post('/api/scrape', async (req, res) => {
   const { url } = req.body
 
@@ -110,19 +111,6 @@ app.post('/api/scrape', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`)
 })
-
-// For direct usage
-if (require.main === module) {
-  const testUrl =
-    'https://www.amazon.in/Scotch-Brite-Heavy-Duty-Gloves-Medium/dp/B00NBM0WD4/ref=sr_1_3?_encoding=UTF8&s=home-improvement&sr=1-3'
-
-  scrapeAmazonProduct(testUrl)
-    .then((data) => {
-      fs.writeFileSync('product-data.json', JSON.stringify(data, null, 2))
-      console.log('Data saved successfully!')
-    })
-    .catch(console.error)
-}
 
 // Export for potential module use
 module.exports = { scrapeAmazonProduct }
