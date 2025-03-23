@@ -8,16 +8,25 @@ const dotenv = require('dotenv')
 const app = express()
 const port = 5000
 
-// Middleware
 dotenv.config()
 app.use(express.json())
 app.use(cors())
 
-// console.log(process.env.GEMINI_API_KEY)
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
 async function scrapeAmazonProduct(url) {
-  const browser = await puppeteer.launch()
+  const browser = await puppeteer.launch({
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--single-process',
+      '--no-zygote',
+    ],
+    executablePath:
+      process.env.NODE_ENV === 'production'
+        ? process.env.PUPPETEER_EXECUTABLE_PATH
+        : puppeteer.executablePath(),
+  })
   const page = await browser.newPage()
 
   try {

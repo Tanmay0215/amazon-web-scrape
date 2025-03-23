@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 function App() {
+  const BACKEND_URL = 'https://amazon-web-scrape-bp3n.onrender.com'
   const [url, setUrl] = useState('')
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -18,7 +19,7 @@ function App() {
     setError(null)
 
     try {
-      const response = await fetch('http://localhost:5000/api/scrape', {
+      const response = await fetch(`${BACKEND_URL}/api/scrape`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -89,13 +90,13 @@ function App() {
               </span>
             </div>
           </div>
-          <h4 className="text-lg font-semibold mb-2 text-gray-800">
+          <h4 className="text-lg font-semibold mb-2">
             AI Review Summary:
           </h4>
-          <p className="bg-gray-50 p-4 rounded mb-4 italic text-gray-700">
+          <p className="bg-gray-50 p-4 rounded mb-4">
             {result.aiReviewSummary}
           </p>
-          <h4 className="text-lg font-semibold mb-2 text-gray-800">
+          <h4 className="text-lg font-semibold mb-2">
             Full Data:
           </h4>
           <pre className="bg-gray-100 p-4 rounded-lg overflow-auto max-h-96 text-sm">
