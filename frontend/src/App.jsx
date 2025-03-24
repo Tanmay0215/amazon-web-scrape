@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
 function App() {
-  const BACKEND_URL = 'https://amazon-web-scrape-bp3n.onrender.com'
+  const BACKEND_URL = 'https://amazon-web-scrape-knxf.onrender.com'
+  // const BACKEND_URL = 'http://localhost:5000'
   const [url, setUrl] = useState('')
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)

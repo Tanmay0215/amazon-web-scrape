@@ -16,17 +16,9 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
 
 async function scrapeAmazonProduct(url) {
   const browser = await puppeteer.launch({
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--single-process',
-      '--no-zygote',
-    ],
-    executablePath:
-      process.env.NODE_ENV === 'production'
-        ? process.env.PUPPETEER_EXECUTABLE_PATH
-        : puppeteer.executablePath(),
-  })
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    headless: true,
+  });
   const page = await browser.newPage()
 
   try {
@@ -79,7 +71,6 @@ async function scrapeAmazonProduct(url) {
       aiReviewSummary: '',
     }
 
-    // Generate AI review summary
     const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' })
     const prompt = `Generate a concise customer review summary for this product: ${
       productData.productName
@@ -105,10 +96,6 @@ app.post('/api/scrape', async (req, res) => {
 
   try {
     const productData = await scrapeAmazonProduct(url)
-
-    // Save data to file (optional)
-    fs.writeFileSync('product-data.json', JSON.stringify(productData, null, 2))
-
     res.json(productData)
   } catch (error) {
     console.error('Error handling scrape request:', error)
@@ -116,10 +103,6 @@ app.post('/api/scrape', async (req, res) => {
   }
 })
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`)
 })
-
-// Export for potential module use
-module.exports = { scrapeAmazonProduct }
